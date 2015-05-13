@@ -1,10 +1,13 @@
 complete <- function(directory, id = 1:332) {
-    files <- list.files(path = directory, pattern = "*.csv", full.names = TRUE)
-    count = 0
+    data_frame <- data.frame(id = integer(0), nobs = integer(0))
+    colnames(data_frame) <- c('id', 'nobs')
+    filenames <- paste(formatC(id, width = 3, format = 'd', flag = '0'), 'csv', sep = '.')
+    filenames <- paste(directory, filenames, sep = '/')
     for (i in 1:length(id)) {
-        data <- read.csv(files[i])
+        data <- read.csv(filenames[i])
         indices <- !is.na(data[["sulfate"]]) & !is.na(data[["nitrate"]])
-        count = count + sum(indices)
+        new_column <- c(id[i], sum(indices))
+        data_frame <- rbind(data_frame, new_column)
     }
-    count
+    data_frame
 }
